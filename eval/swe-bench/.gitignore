@@ -1,0 +1,18 @@
+# Build artifacts and run outputs — reproducible, not for version control.
+# (Comments must be on their own line; git ignores no inline/trailing comments.)
+
+# Compiled pi binaries (~200MB); rebuild via build_pi_binary.sh
+bin/
+
+# Per-instance build + agent logs
+logs/
+
+# Inference outputs
+predictions*.jsonl
+
+# Evaluation reports
+*.pi-smoke.json
+
+# Python caches
+__pycache__/
+*.pyc
