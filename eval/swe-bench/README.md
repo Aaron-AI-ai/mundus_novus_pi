@@ -13,6 +13,18 @@ inference (run_inference.py)                 evaluation (run_eval.py)
   append to predictions.jsonl
 ```
 
+## Quick start (new machine)
+
+```bash
+git clone <repo> && cd <repo>/eval/swe-bench
+./setup.sh        # npm install + build pi + cross-compile the linux binary + pip install swebench
+```
+
+`setup.sh` detects the host architecture and builds the matching binary, so it works on both
+Apple Silicon (arm64) and Intel/Linux (x86_64). The compiled binaries (~200MB) are **not** in git
+— this script regenerates them per machine. After it finishes, provide an OpenRouter key
+(`pi /login openrouter` or `export OPENROUTER_API_KEY=...`) and ensure Docker is running.
+
 ## Prerequisites
 
 - **Docker** running (Docker Desktop).
