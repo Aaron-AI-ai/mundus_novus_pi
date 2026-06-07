@@ -54,6 +54,18 @@ may need x86_64 on an Intel/Linux host instead.
 
 ## Run
 
+### One-command smoke (inference + evaluation)
+
+```bash
+./run_smoke.sh                                    # defaults: pallets__flask-4992 + qwen/qwen3.6-27b
+./run_smoke.sh psf__requests-3362 anthropic/claude-opus-4.8   # pick instance + model
+```
+
+Auto-detects host arch, runs inference then official scoring for one instance, and writes the
+resolved report. Override with env vars: `PROVIDER=`, `RUN_ID=`, `MODEL_NAME=`.
+
+### Manual (two steps)
+
 ```bash
 # 1) Inference — one instance (smoke)
 python3 run_inference.py \
@@ -86,6 +98,8 @@ Resolved % = resolved_instances / total. Start with ~20 instances before the ful
 
 | File | Purpose |
 |------|---------|
+| `setup.sh` | One-command bootstrap on a fresh machine (install + build + compile binary) |
+| `run_smoke.sh` | End-to-end run for one instance (inference + evaluation) |
 | `run_inference.py` | Build image, run pi in container, extract patch → predictions.jsonl |
 | `run_eval.py` | Official swebench scoring, forced arm64-native |
 | `build_pi_binary.sh` | Cross-compile the linux pi binary |
