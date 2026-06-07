@@ -88,11 +88,24 @@ python3 run_eval.py --predictions-path predictions.jsonl --run-id pi-smoke
 - **Ollama** (later): add an entry to `~/.pi/agent/models.json` (`api: openai-completions`,
   `baseUrl: http://host.docker.internal:11434/v1`), then `--provider ollama --model <id>`.
 
-## Scaling to a subset / full Lite
+## Full / subset run (official scoring)
 
-`run_inference.py` appends one line per instance to `predictions.jsonl`. Loop over instance ids
-(or add a `--instance-ids` batch mode), then run `run_eval.py` once over the whole file.
-Resolved % = resolved_instances / total. Start with ~20 instances before the full 300.
+`run_full.sh` runs inference over many instances, then one official scoring pass, and prints the
+resolved %. It is **resumable** (re-running skips instances already in the predictions file) and
+tolerates per-instance failures.
+
+```bash
+LIMIT=20 ./run_full.sh                         # first 20 instances (recommended first)
+./run_full.sh                                  # ALL 300, qwen/qwen3.6-27b
+./run_full.sh anthropic/claude-opus-4.8        # ALL 300 with another model
+IDS_FILE=my_ids.txt ./run_full.sh              # explicit instance-id list (one per line)
+```
+
+Env overrides: `PROVIDER`, `RUN_ID`, `MODEL_NAME`, `PRED`, `MAX_WORKERS` (scoring parallelism), `LIMIT`.
+
+> ⚠️ Each instance builds a multi-GB image and calls the model. All 300 = many hours + tens of GB
+> of disk. Inference runs sequentially; only the scoring pass parallelizes (`MAX_WORKERS`).
+> Reclaim space afterwards with `docker system prune -a` (this deletes the cached instance images).
 
 ## Files
 
@@ -100,6 +113,7 @@ Resolved % = resolved_instances / total. Start with ~20 instances before the ful
 |------|---------|
 | `setup.sh` | One-command bootstrap on a fresh machine (install + build + compile binary) |
 | `run_smoke.sh` | End-to-end run for one instance (inference + evaluation) |
+| `run_full.sh` | Full/subset run: inference over many instances + one scoring pass (resumable) |
 | `run_inference.py` | Build image, run pi in container, extract patch → predictions.jsonl |
 | `run_eval.py` | Official swebench scoring, forced arm64-native |
 | `build_pi_binary.sh` | Cross-compile the linux pi binary |
