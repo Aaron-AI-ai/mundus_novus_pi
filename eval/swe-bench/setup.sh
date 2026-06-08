@@ -30,15 +30,13 @@ command -v docker >/dev/null || warn "docker not found (needed to run instances)
 command -v python3>/dev/null || warn "python3 not found (needed for swebench)."
 docker info >/dev/null 2>&1 || warn "Docker daemon not running — start Docker before running the harness."
 
-# --- 1. install JS deps & build pi ------------------------------------------
+# --- 1. install JS deps ------------------------------------------------------
 say "Installing npm dependencies (repo root)"
 ( cd "$REPO_ROOT" && npm install )
 
-say "Building pi (tui -> ai -> agent -> coding-agent)"
-( cd "$REPO_ROOT" && npm run build )
-
-# --- 2. cross-compile the linux pi binary for this host's arch --------------
-say "Cross-compiling linux pi binary ($ARCH)"
+# --- 2. build pi + cross-compile the linux binary for this host's arch -------
+# build_pi_binary.sh runs `npm run build` then compiles the binary.
+say "Building pi + cross-compiling linux binary ($ARCH)"
 "$HERE/build_pi_binary.sh" "$ARCH"
 
 # --- 3. python deps for the official evaluation -----------------------------

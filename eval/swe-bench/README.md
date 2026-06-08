@@ -117,6 +117,7 @@ Env overrides: `PROVIDER`, `RUN_ID`, `MODEL_NAME`, `PRED`, `MAX_WORKERS` (scorin
 | `run_inference.py` | Build image, run pi in container, extract patch → predictions.jsonl |
 | `run_eval.py` | Official swebench scoring, forced arm64-native |
 | `build_pi_binary.sh` | Cross-compile the linux pi binary |
+| `rebuild.sh` | After editing pi source: rebuild pi + regenerate the injected binary |
 | `run_eval.sh` | Thin wrapper for the official CLI (x86_64 hosts only) |
 | `bin/` | Prebuilt pi binaries |
 | `logs/` | Per-instance build + agent logs |
